@@ -1,83 +1,54 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <div class="row">
+    <div class="col-6">
+      <p><img @mousedown="mDown" @mousemove="mMove" @mouseup="mUp" class="drag-and-drop" src="/sea.png"></p>
+    </div>
+    <div class="col-6">
+    </div>
+  </div>
 </template>
 
 <script>
-
+let id = 1;
 export default {
-  layout: 'menu'
-}
+  name: 'simple',
+  display: 'Simple',
+  layout: 'menu',
+  data () {
+    return {
+      x: 0,
+      y: 0,
+      is_mousedown: false
+    }
+  },
+  methods: {
+    mDown () {
+      this.x = event.pageX - this.$el.offsetLeft
+      this.y = event.pageY - this.$el.offsetTop
+      this.is_mousedown = true
+      console.log("DOWN X:" + event.pageX + " Y:" + event.pageY + " OffsetLeft:" + this.$el.offsetLeft + " OffsetRight:" + this.$el.offsetTop)
+      console.log(event)
+    },
+    mMove () {
+      if (this.is_mousedown) {
+        console.log("MOVE X:" + event.pageX + " Y:" + event.pageY)
+      }
+    },
+    mUp () {
+      if (this.is_mousedown) {
+        this.is_mousedown = false
+        console.log("UP X:" + event.pageX + " Y:" + event.pageY)
+      }
+    }
+  }
+};
 </script>
+<style scoped>
+.buttons {
+  margin-top: 35px;
+}
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+</style>
