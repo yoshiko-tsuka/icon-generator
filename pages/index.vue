@@ -1,7 +1,8 @@
 <template>
   <div class="row">
     <div class="col-6">
-      <p><img @mousedown="mDown" @mousemove="mMove" @mouseup="mUp" class="drag-and-drop" src="/sea.png"></p>
+      <p><img @dragstart="dStart" @drag="dMove" @dragend="dEnd" class="drag-and-drop" src="/sea.png"></p>
+      <span id="dummy"></span>
     </div>
     <div class="col-6">
     </div>
@@ -18,25 +19,33 @@ export default {
     return {
       x: 0,
       y: 0,
-      is_mousedown: false
+      is_dragging: false
     }
   },
+  mounted () {
+    
+  },
   methods: {
-    mDown () {
-      this.x = event.pageX - this.$el.offsetLeft
-      this.y = event.pageY - this.$el.offsetTop
-      this.is_mousedown = true
-      console.log("DOWN X:" + event.pageX + " Y:" + event.pageY + " OffsetLeft:" + this.$el.offsetLeft + " OffsetRight:" + this.$el.offsetTop)
-      console.log(event)
+    dStart () {
+      let el = document.getElementById( "dummy" )
+      event.dataTransfer.setDragImage( el, 0, 0 )
+      event.srcElement.style.position = 'absolute'
+      event.srcElement.style.zIndex = 1000
+      event.srcElement.style.left = event.pageX - event.srcElement.offsetWidth / 2 + 'px'
+      event.srcElement.style.top = event.pageY - event.srcElement.offsetHeight / 2 + 'px'
+      this.is_dragging = true
+      console.log("DOWN el:" + event.srcElement + "X:" + event.pageX + " Y:" + event.pageY + " OffsetLeft:" + event.srcElement.offsetWidth + " OffsetRight:" + event.srcElement.offsetHeight)
+      console.log(event.dataTransfer)
     },
-    mMove () {
-      if (this.is_mousedown) {
-        console.log("MOVE X:" + event.pageX + " Y:" + event.pageY)
+    dMove () {
+      if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
+        event.srcElement.style.left = event.pageX - event.srcElement.offsetWidth / 2 + 'px'
+        event.srcElement.style.top = event.pageY - event.srcElement.offsetHeight / 2 + 'px'
       }
     },
-    mUp () {
-      if (this.is_mousedown) {
-        this.is_mousedown = false
+    dEnd () {
+      if (this.is_dragging) {
+        this.is_dragging = false
         console.log("UP X:" + event.pageX + " Y:" + event.pageY)
       }
     }
