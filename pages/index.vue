@@ -5,7 +5,10 @@
     </div>
     <div class="col-6">
       <svg xmlns="http://www.w3.org/2000/svg" style="background-color:#ccc" width="400" height="300" viewbox="0 0 400 300">
-        <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown="mDown" @mousemove="mMove" @mouseup="dEnd"/>
+        <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown="mDownCircle" @mousemove="mMoveCircle" @mouseup="dEnd"/>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" style="background-color:#ccc" width="400" height="300" viewbox="0 0 400 300">
+        <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown="mDownSquare" @mousemove="mMoveSquare" @mouseup="dEnd" />
       </svg>
     </div>
   </div>
@@ -57,7 +60,7 @@ export default {
         this.r = 0
       }
     },
-    mDown () {
+    mDownCircle () {
       this.x = event.pageX
       this.y = event.pageY
       this.cx = parseInt(event.target.attributes.cx.value)
@@ -65,10 +68,23 @@ export default {
       this.r = parseInt(event.target.attributes.r.value) 
       this.is_dragging = true
     },
-    mMove () {
+    mMoveCircle () {
       if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
         event.target.setAttribute('cx', event.pageX - this.x + this.cx)
         event.target.setAttribute('cy', event.pageY - this.y + this.cy)
+      }
+    },
+    mDownSquare () {
+      this.x = event.pageX
+      this.y = event.pageY
+      this.cx = parseInt(event.target.attributes.x.value)
+      this.cy = parseInt(event.target.attributes.y.value)
+      this.is_dragging = true
+    },
+    mMoveSquare () {
+      if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
+        event.target.setAttribute('x', event.pageX - this.x + this.cx)
+        event.target.setAttribute('y', event.pageY - this.y + this.cy)
       }
     }
   }
