@@ -8,8 +8,8 @@
         <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
         <line x1="100" y1="100" x2="400" y2="100" stroke-width="10" stroke="#FF00FF" @mousedown.self.stop="mDownLine" @mousemove.self.stop="mMoveLine"/>
-      　<polygon points="20 30, 35 10, 50 30" stroke-width="1" stroke="#000000" fill="none" />
-      　<polygon points="60 30, 75 10, 90 30, 75 50" stroke-width="1" stroke="#000000" fill="none" />
+      　<polygon points="20 30, 35 10, 50 30" stroke-width="1" stroke="#000000" fill="#FF00FF" @mousedown.self.stop="mDownPoligon" @mousemove.self.stop="mMovePoligon" />
+      　<polygon points="60 30, 75 10, 90 30, 75 50" stroke-width="1" stroke="#000000" fill="#FF00FF" @mousedown.self.stop="mDownPoligon" @mousemove.self.stop="mMovePoligon" />
       </svg>
     </div>
   </div>
@@ -30,6 +30,7 @@ export default {
       xl: 0,
       yl: 0,
       r: 0,
+      arr: '0 0, 0 0, 0 0',
       is_dragging: false
     }
   },
@@ -63,7 +64,7 @@ export default {
         this.xl = 0
         this.yl = 0
         this.r = 0
-        console.log(this.is_dragging)
+        this.arr = '0 0, 0 0, 0 0'
       }
     },
     mDownCircle () {
@@ -76,7 +77,6 @@ export default {
     },
     mMoveCircle () {
       if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
-        console.log("move Circle")
         event.target.setAttribute('cx', event.pageX - this.x + this.cx)
         event.target.setAttribute('cy', event.pageY - this.y + this.cy)
       }
@@ -90,7 +90,6 @@ export default {
     },
     mMoveSquare () {
       if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
-        console.log("move Square")
         event.target.setAttribute('x', event.pageX - this.x + this.cx)
         event.target.setAttribute('y', event.pageY - this.y + this.cy)
       }
@@ -111,6 +110,30 @@ export default {
         event.target.setAttribute('y1', event.pageY - this.y + this.cy)
         event.target.setAttribute('x2', event.pageX - this.x + this.cx + this.xl)
         event.target.setAttribute('y2', event.pageY - this.y + this.cy + this.yl)
+      }
+    },
+    mDownPoligon () {
+      this.is_dragging = true
+      this.x = event.pageX
+      this.y = event.pageY
+      this.arr = event.target.attributes.points.value
+    },
+    mMovePoligon () {
+      if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
+        let points = ''
+        const difX = event.pageX - this.x
+        const difY = event.pageY - this.y
+        this.arr.split(', ').forEach(function( value ) {
+          const xy = value.split(' ')
+          const x1 = difX + parseInt(xy[0])
+          const y1 = difY + parseInt(xy[1])
+          if (points === ''){
+            points = x1 + ' ' + y1
+          } else {
+            points += ', ' + x1 + ' ' + y1
+          }
+        })
+        event.target.setAttribute('points', points)
       }
     }
   }
