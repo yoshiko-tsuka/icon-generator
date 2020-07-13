@@ -1,16 +1,18 @@
 <template>
   <div class="row">
     <div class="col-6">
-      <p><img @dragstart.self="dStart" @drag.self="dMove" @dragend.self="dEnd" class="drag-and-drop" src="/sea.png"></p>
-    </div>
-    <div class="col-6">
-      <svg xmlns="http://www.w3.org/2000/svg" style="background-color:#ccc" width="400" height="300" viewbox="0 0 400 300" @mouseup="dEnd">
+      <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="background-color:#ccc" width="500" height="500" viewbox="0 0 500 500" @mouseup="dEnd">
         <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
         <line x1="100" y1="100" x2="400" y2="100" stroke-width="10" stroke="#FF00FF" @mousedown.self.stop="mDownLine" @mousemove.self.stop="mMoveLine"/>
       　<polygon points="20 30, 35 10, 50 30" stroke-width="1" stroke="#000000" fill="#FF00FF" @mousedown.self.stop="mDownPoligon" @mousemove.self.stop="mMovePoligon" />
       　<polygon points="60 30, 75 10, 90 30, 75 50" stroke-width="1" stroke="#000000" fill="#FF00FF" @mousedown.self.stop="mDownPoligon" @mousemove.self.stop="mMovePoligon" />
+        <image href="/sea.png" x="300" y="300" width="50" height="40" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare" />
       </svg>
+    </div>
+    <div class="col-6">
+      <div><button @click="svg2imageData">変換する</button></div>
+      <img src="" id="converted-image">
     </div>
   </div>
 </template>
@@ -135,6 +137,20 @@ export default {
         })
         event.target.setAttribute('points', points)
       }
+    },
+    svg2imageData () {
+      const canvas = document.createElement('canvas')
+      const svgElement = document.getElementById('artboard')
+      console.log(svgElement)
+      canvas.width = svgElement.width.baseVal.value
+      canvas.height = svgElement.height.baseVal.value
+      const img = document.getElementById('converted-image')
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, img.width, img.height)
+      console.log(ctx)
+      const svgData = new XMLSerializer().serializeToString(svgElement)
+      console.log(svgData)
+      document.getElementById('converted-image').src = canvas.toDataURL('data:image/svg+xml;charset=utf-8;base64,' + svgData)
     }
   }
 };
