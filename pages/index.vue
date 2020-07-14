@@ -13,6 +13,7 @@
     <div class="col-6">
       <div><button @click="svg2imageData">変換する</button></div>
       <img src="" id="converted-image">
+      <button v-show="show" id="icon-download" type="application/octet-stream" href="" download="your_icon.png">Download</button>
     </div>
   </div>
 </template>
@@ -33,7 +34,8 @@ export default {
       yl: 0,
       r: 0,
       arr: '0 0, 0 0, 0 0',
-      is_dragging: false
+      is_dragging: false,
+      show: false
     }
   },
   mounted () {
@@ -146,11 +148,18 @@ export default {
       canvas.height = svgElement.height.baseVal.value
       const img = document.getElementById('converted-image')
       const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, img.width, img.height)
+      
       console.log(ctx)
       const svgData = new XMLSerializer().serializeToString(svgElement)
       console.log(svgData)
-      document.getElementById('converted-image').src = canvas.toDataURL('data:image/svg+xml;charset=utf-8;base64,' + svgData)
+      const imgsrc = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgData)))
+      console.log(imgsrc)
+      ctx.drawImage(img, 0, 0, img.width, img.height)
+      const downloadBtn = document.getElementById('icon-download')
+      console.log(downloadBtn)
+      downloadBtn.href = canvas.toDataURL("image/png")
+      img.src = imgsrc
+      this.show = true
     }
   }
 };
