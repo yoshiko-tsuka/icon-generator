@@ -12,8 +12,8 @@
     </div>
     <div class="col-6">
       <div><button @click="svg2imageData">変換する</button></div>
-      <img src="" id="converted-image">
-      <button v-show="show" id="icon-download" type="application/octet-stream" href="" download="your_icon.png">Download</button>
+      <canvas id='converted-canvas' width="" height=""></canvas>
+      <a v-show="show" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png">Download</a>
     </div>
   </div>
 </template>
@@ -35,7 +35,8 @@ export default {
       r: 0,
       arr: '0 0, 0 0, 0 0',
       is_dragging: false,
-      show: false
+      show: false,
+      download_href: ''
     }
   },
   mounted () {
@@ -140,26 +141,34 @@ export default {
         event.target.setAttribute('points', points)
       }
     },
+    loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => resolve(img)
+        img.onerror = (e) => reject(e)
+        img.src = src
+      })
+    },
     svg2imageData () {
-      const canvas = document.createElement('canvas')
       const svgElement = document.getElementById('artboard')
       console.log(svgElement)
-      canvas.width = svgElement.width.baseVal.value
-      canvas.height = svgElement.height.baseVal.value
-      const img = document.getElementById('converted-image')
-      const ctx = canvas.getContext('2d')
-      
-      console.log(ctx)
       const svgData = new XMLSerializer().serializeToString(svgElement)
       console.log(svgData)
       const imgsrc = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgData)))
-      console.log(imgsrc)
-      ctx.drawImage(img, 0, 0, img.width, img.height)
-      const downloadBtn = document.getElementById('icon-download')
-      console.log(downloadBtn)
-      downloadBtn.href = canvas.toDataURL("image/png")
-      img.src = imgsrc
-      this.show = true
+      this.loadImage(imgsrc).then(img => {
+        console.log(img)
+        const downloadBtn = document.getElementById('icon-download')
+        this.show = true
+        const canvas = document.getElementById('converted-canvas')
+        canvas.width = svgElement.width.baseVal.value
+        canvas.height = svgElement.height.baseVal.value
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+        console.log(ctx)
+        this.download_href = canvas.toDataURL("image/png")
+      }).catch(e => {
+        console.log('onload error', e)
+      })
     }
   }
 };
