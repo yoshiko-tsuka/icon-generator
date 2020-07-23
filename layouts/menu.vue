@@ -26,11 +26,10 @@
 
     <v-app-bar
       app
-      color="indigo"
-      dark
+      color="pink lighten-1"
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-app-bar-nav-icon class="white--text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title class="white--text">Application</v-toolbar-title>
     </v-app-bar>
 
     <v-content>
@@ -44,10 +43,10 @@
     </v-content>
     
     <v-footer
-      color="indigo"
+      color="pink lighten-1"
       app
     >
-      <span class="white--text">&copy; 2019</span>
+      <span class="white--text">&copy; 2020</span>
     </v-footer>
   </v-app>
 </template>
