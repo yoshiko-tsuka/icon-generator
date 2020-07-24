@@ -46,7 +46,7 @@
       color="pink lighten-1"
       app
     >
-      <span class="white--text">&copy; 2020</span>
+      <span class="white--text">&copy; {{ year }}</span>
     </v-footer>
   </v-app>
 </template>
@@ -58,6 +58,11 @@
     },
     data: () => ({
       drawer: null,
+      year: 2020,
     }),
+    mounted () {
+      const today = new Date()
+      this.year = today.getFullYear()
+    }
   }
 </script>
