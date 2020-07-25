@@ -12,15 +12,29 @@
             </v-list-item-content>
           </template>
           <v-list-item style="padding-left:0px;">
-            <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="border: medium solid #ffffff;" width="300" height="100" viewbox="100 0 300 100">
-              <circle cx=50 cy=50 r=40 fill="blue"/>
-              <rect x="100" y="14" rx="0" ry="0" width="75" height="75" stroke-width="1" stroke="blue" fill="blue"/>
+            <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="border: medium solid #ffffff;" width="300" height="70" viewbox="100 0 300 100">
+              <path d="M50 10 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z" fill="#fe65b7"/>
+              <circle cx=120 cy=28 r=23 fill="#e9c904"/>
+              <rect x="170" y="6" rx="0" ry="0" width="45" height="45" stroke-width="1" stroke="none" fill="#8fc33a"/>
             </svg>
           </v-list-item>
           <v-list-item style="padding-left:0px;">
-            <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="border: medium solid #ffffff;" width="300" height="100" viewbox="100 0 300 100">
-              <circle cx=50 cy=50 r=40 fill="blue"/>
-              <rect x="100" y="50" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF"/>
+            <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="border: medium solid #ffffff;" width="300" height="70" viewbox="100 0 300 100">
+              <polygon points="25 50, 50 6, 75 50" stroke-width="1" stroke="none" fill="#fe65b7"/>
+              <path  d="
+                M 120.000 45.000
+                L 137.634 54.271
+                L 134.266 34.635
+                L 148.532 20.729
+                L 128.817 17.865
+                L 120.000 0.000
+                L 111.183 17.865
+                L 91.468 20.729
+                L 105.734 34.635
+                L 102.366 54.271
+                L 120.000 45.000
+                "  fill="#e9c904"/>
+              <polygon points="170 30, 195 6, 220 30, 195 54" stroke-width="1" stroke="none" fill="#8fc33a"/>
             </svg>
           </v-list-item>
         </v-list-group>
