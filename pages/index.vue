@@ -42,7 +42,7 @@
                 Cancel
               </v-btn>
                         
-              <a @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png">DOWNLOAD</a>
+              <a @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png"><v-icon>cloud_download</v-icon></a>
             </v-card-actions>
           </v-col>
         </v-row>
@@ -105,6 +105,10 @@ export default {
         this.r = 0
         this.arr = '0 0, 0 0, 0 0'
       }
+      console.log(event.target)
+    },
+    drpoForm () {
+      console.log(event.target)
     },
     mDownCircle () {
       this.is_dragging = true
