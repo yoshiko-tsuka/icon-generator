@@ -1,9 +1,12 @@
 <template>
-  <v-row justify="center">
-    <div class="artboard" @dragover="dragShape" @drop="dropShape">
+  <v-row justify="end">
+    <v-col cols="12" md="3">
+    </v-col>
+    <v-col>
+    <div class="artboard" @dragover="dragShape" @drop="dropShape" style="max-width:502px;">
     <svg id="artboard" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewbox="0 0 500 500" @mouseup="dEnd">
         <template v-for="item in layer">
-          <path :id="item.id" :d="item.d" :fill="item.fill" @mousedown.self.stop="mDownPath" @mousemove.self.stpo="mMovePath"></path>
+          <path :id="item.id" :d="item.d" :fill="item.fill" @mousedown.self.stop="mDownPath" @mousemove.self.stop="mMovePath"></path>
         </template>
         <!-- <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
@@ -16,28 +19,39 @@
       <path d="M30 15 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z" fill="#fe65b7" />
     </svg> -->
     </div>
+    </v-col>
+    <v-col>
     <v-btn
       color="primary"
       dark
       @click.stop="svg2imageData"
     >
-      変換する
+      generate!!
     </v-btn>
+    </v-col>
 
     <v-dialog
       v-model="dialog"
       max-width="290"
     >
       <v-card>
-        <v-card-title class="headline">Congrats!!!</v-card-title>
+        <v-card-title class="headline" style="padding:auto; margin:auto;">
+          <v-icon color="yellow darken-2">star</v-icon>
+          <v-icon color="yellow darken-2">star</v-icon>
+          <v-icon color="yellow darken-2">star</v-icon>
+          &nbsp;DONE!!&nbsp;
+          <v-icon color="yellow darken-2">star</v-icon>
+          <v-icon color="yellow darken-2">star</v-icon>
+          <v-icon color="yellow darken-2">star</v-icon>
+        </v-card-title>
           
-        <v-col cols="mb-12" class="artboard">
+        <v-col cols="mb-10" class="artboard">
           <canvas v-show="false" id='converted-canvas' width="" height=""></canvas>
           <canvas id='confirm-icon' width="" height=""></canvas>
         </v-col>
         <v-card-actions>
           <v-spacer></v-spacer>                       
-            <a class="download-btn" @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png"><v-icon color="white">cloud_download</v-icon> Download</a>
+            <a class="download-btn" @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png"><v-icon color="white">cloud_download</v-icon> DOWNLOAD</a>
         </v-card-actions>
       </v-card>
     </v-dialog>
