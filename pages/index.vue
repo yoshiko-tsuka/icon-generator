@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <div class="artboard">
+    <div class="artboard" @drop="dropShape">
     <svg id="artboard" xmlns="http://www.w3.org/2000/svg" style="border: medium solid #ffffff;" width="500" height="500" viewbox="0 0 500 500" @mouseup="dEnd">
         <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
@@ -107,8 +107,10 @@ export default {
       }
       console.log(event.target)
     },
-    drpoForm () {
-      console.log(event.target)
+    dropShape () {
+      const get_item = event.dataTransfer.getData("text")
+      console.log(get_item)
+      event.preventDefault()
     },
     mDownCircle () {
       this.is_dragging = true
