@@ -2,6 +2,9 @@
   <v-row justify="center">
     <div class="artboard" @dragover="dragShape" @drop="dropShape">
     <svg id="artboard" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewbox="0 0 500 500" @mouseup="dEnd">
+        <template v-for="item in layer">
+          <path :id="item.id" :d="item.d" :fill="item.fill" @mousedown.self.stop="mDownPath" @mousemove.self.stpo="mMovePath"></path>
+        </template>
         <!-- <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
         <line x1="100" y1="100" x2="400" y2="100" stroke-width="10" stroke="#FF00FF" @mousedown.self.stop="mDownLine" @mousemove.self.stop="mMoveLine"/>
@@ -25,31 +28,17 @@
       v-model="dialog"
       max-width="290"
     >
-      <v-card
-        class="mx-auto"
-        max-width="290"
-      >
-      <v-container>
-        <v-row justify="center">
-          <v-col cols="auto">
-            <canvas v-show="false" id='converted-canvas' width="" height=""></canvas>
-            <canvas id='confirm-icon' width="" height=""></canvas>
-          </v-col>
-          <v-col cols="auto">
-            <v-card-actions>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="dialog = false"
-              >
-                Cancel
-              </v-btn>
-                        
-              <a @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png"><v-icon>cloud_download</v-icon></a>
-            </v-card-actions>
-          </v-col>
-        </v-row>
-        </v-container>
+      <v-card>
+        <v-card-title class="headline">Congrats!!!</v-card-title>
+          
+        <v-col cols="mb-12" class="artboard">
+          <canvas v-show="false" id='converted-canvas' width="" height=""></canvas>
+          <canvas id='confirm-icon' width="" height=""></canvas>
+        </v-col>
+        <v-card-actions>
+          <v-spacer></v-spacer>                       
+            <a class="download-btn" @click="dialog = false" :href="download_href" id="icon-download" type="application/octet-stream" download="your_icon.png"><v-icon color="white">cloud_download</v-icon> Download</a>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
@@ -75,7 +64,8 @@ export default {
       is_dragging: false,
       dialog: false,
       download_href: '',
-      layer: []
+      layer: [
+      ]
     }
   },
   mounted () {
@@ -121,17 +111,42 @@ export default {
       event.preventDefault()
     },
     addShape (item) {
-      let svg = document.createElementNS('http://www.w3.org/2000/svg','path');
       switch(item) {
         case 'heart':
-          svg.setAttribute('d', 'M30 15 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z')
-          svg.setAttribute('fill', '#fe65b7')
+          this.layer.push({
+            id: this.layer.length,
+            d: 'M30 15 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z',
+            fill : '#fe65b7',
+            x: 0,
+            y: 0,
+            cx: 30,
+            cy: 15
+          })
+          console.log(this.layer)
+          break;
         case 'circle':
-          svg.setAttribute('d', 'M30 15 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z')
-          svg.setAttribute('fill', '#fe65b7')
-  
-        default:
-          this.artboard.appendChild(svg);
+          break;
+      }
+    },
+    mDownPath () {
+      this.is_dragging = true
+      this.layer[event.target.id].x = event.pageX
+      this.layer[event.target.id].y = event.pageY
+      let d = this.layer[event.target.id].d
+      const m = this.layer[event.target.id].d.match(/M\d+\s\d+/)
+      const num = m[0].match(/\d+/g)
+      this.layer[event.target.id].cx = parseInt(num[0])
+      this.layer[event.target.id].cy = parseInt(num[1])
+      console.log(this.layer[event.target.id].cx)
+      console.log(this.layer[event.target.id].cy)
+    },
+    mMovePath () {
+      if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
+        let d = this.layer[event.target.id].d
+        const x = event.pageX - this.layer[event.target.id].x + this.layer[event.target.id].cx
+        const y = event.pageY - this.layer[event.target.id].y + this.layer[event.target.id].cy
+        const m_new = 'M' + x + ' ' + y
+        this.layer[event.target.id].d = d.replace(/M\d+\s\d+/, m_new)
       }
     },
     mDownCircle () {
@@ -245,13 +260,20 @@ export default {
 .buttons {
   margin-top: 35px;
 }
+.download-btn {
+  cursor: pointer;
+  border-radius: 5%;  
+  padding: 3px 12px;
+  background: #ec407a;
+  color: #ffffff;
+  text-decoration: none;
+}
 .ghost {
   opacity: 0.5;
   background: #c8ebfb;
 }
 #icon-download {
-  color: #ff9800!important;
-  text-decoration: none;
+  
 }
 .artboard {
   border: 1px solid #CCCCCC;
