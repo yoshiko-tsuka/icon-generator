@@ -8,10 +8,10 @@
     >
       <v-list-item class="px-2">
         <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+          <v-icon>menu</v-icon>
         </v-list-item-avatar>
 
-        <v-list-item-title>John Leider</v-list-item-title>
+        <v-list-item-title></v-list-item-title>
 
         <v-btn
           icon
@@ -172,14 +172,19 @@
     data: () => ({
       drawer: true,
       year: 2020,
-      mini: true
+      mini: true,
+      drag_image: {}
     }),
     mounted () {
       const today = new Date()
       this.year = today.getFullYear()
+      this.drag_image = document.createElement('img')
     },
     methods: {
       dragStart() {
+        this.drag_image.src = '/drag_images/' + event.target.id + '.png'
+        console.log(this.drag_image.src)
+        event.dataTransfer.setDragImage( this.drag_image, 25, 25)
         console.log(event.target.id)
         event.dataTransfer.setData("text", event.target.id);
       }
