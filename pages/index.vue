@@ -6,7 +6,9 @@
     <div class="artboard" @dragover="dragShape" @drop="dropShape" style="max-width:502px;">
     <svg id="artboard" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewbox="0 0 500 500" @mouseup="dEnd">
         <template v-for="item in layer">
-          <path :id="item.id" :d="item.d" :fill="item.fill" @mousedown.self.stop="mDownPath" @mousemove.self.stop="mMovePath"></path>
+          <g :transform="item.transform" :fill="item.fill">
+            <path :id="item.id" :d="item.d" @click="selectLayer" @mousedown.self.stop="mDownPath" @mousemove.self.stop="mMovePath"></path>
+          </g>
         </template>
         <!-- <circle class="drag-and-drop" cx=30 cy=30 r=30 fill="blue" @mousedown.self.stop="mDownCircle" @mousemove.self.stpo="mMoveCircle"/>
         <rect x="100" y="150" rx="0" ry="0" width="50" height="40" stroke-width="1" stroke="#00FFFF" fill="#CCFFFF" @mousedown.self.stop="mDownSquare" @mousemove.self.stop="mMoveSquare"/>
@@ -21,13 +23,19 @@
     </div>
     </v-col>
     <v-col>
-    <v-btn
-      color="primary"
-      dark
-      @click.stop="svg2imageData"
-    >
-      generate!!
-    </v-btn>
+      <v-btn
+        color="primary"
+        dark
+        @click.stop="svg2imageData"
+      >
+        generate!!
+      </v-btn>
+      <v-card>
+        <v-icon>pallete</v-icon>
+        <v-icon>rotate_right</v-icon>
+        <v-icon @click="zoomIn">zoom_in</v-icon>
+        <v-icon @click="zoomOut">zoom_out</v-icon>
+      </v-card>
     </v-col>
 
     <v-dialog
@@ -78,6 +86,7 @@ export default {
       is_dragging: false,
       dialog: false,
       download_href: '',
+      selected_layer: 0,
       layer: [
       ]
     }
@@ -124,6 +133,10 @@ export default {
       this.addShape(get_item)
       event.preventDefault()
     },
+    selectLayer () {
+      this.selected_layer = event.target.id
+      console.log(this.selected_layer)
+    },
     addShape (item) {
       switch(item) {
         case 'heart':
@@ -131,36 +144,77 @@ export default {
             id: this.layer.length,
             d: 'M30 15 a10,10 90 0,1 20,20 l -20 20 -20 -20 a10,10 90 0,1 20,-20 z',
             fill : '#fe65b7',
-            x: 0,
-            y: 0,
+            transform : 'translate(0 0) scale(1,1) rotate(0)',
             cx: 30,
-            cy: 15
+            cy: 15,
+            x: 0,
+            y: 0
           })
           console.log(this.layer)
           break;
         case 'circle':
+          this.layer.push({
+            id: this.layer.length,
+            d: 'M 25, 50 a 25,25 0 1,1 50,0 a 25,25 0 1,1 -50,0',
+            fill : '#e9c904',
+            transform : 'translate(0 0) scale(1,1) rotate(0)',
+            cx: 15,
+            cy: 30,
+            x: 0,
+            y: 0
+          })
           break;
+      }
+    },
+    zoomIn () {
+      if (this.layer.length > 0) {
+        let transform = this.layer[this.selected_layer].transform
+        const scl = this.layer[this.selected_layer].transform.match(/scale[(][0-9_,.-]+[)]/)
+        const num = scl[0].match(/[0-9.-]+/g)
+        const sx = parseFloat(num[0]) + 0.5
+        const sy = parseFloat(num[1]) + 0.5
+        const s_new = 'scale(' + sx + ',' + sy + ')'
+        this.layer[this.selected_layer].transform = transform.replace(/scale[(][0-9_,.-]+[)]/, s_new)
+      }
+    },
+    zoomOut () {
+      if (this.layer.length > 0) {
+        let transform = this.layer[this.selected_layer].transform
+        const scl = this.layer[this.selected_layer].transform.match(/scale[(][0-9_,.-]+[)]/)
+        const num = scl[0].match(/[0-9.-]+/g)
+        const f_x = parseFloat(num[0])
+        const f_y = parseFloat(num[1])
+        let sx = 0.1
+        let sy = 0.1
+        if (num[0] === '0.1') {
+          // do nothing
+        } else if (f_x <= 0.5) {
+          sx = f_x - 0.1
+          sy = f_y - 0.1
+        } else if (f_x > 0.5) {
+          sx = f_x - 0.5
+          sy = f_y - 0.5
+        }
+        const s_new = 'scale(' + sx.toFixed(1) + ',' + sy.toFixed(1) + ')'
+        this.layer[this.selected_layer].transform = transform.replace(/scale[(][0-9_,.-]+[)]/, s_new)
       }
     },
     mDownPath () {
       this.is_dragging = true
       this.layer[event.target.id].x = event.pageX
       this.layer[event.target.id].y = event.pageY
-      let d = this.layer[event.target.id].d
-      const m = this.layer[event.target.id].d.match(/M\d+\s\d+/)
-      const num = m[0].match(/\d+/g)
+      const translate = this.layer[event.target.id].transform.match(/translate[(]-*\d+\s-*\d+[)]/)
+      const num = translate[0].match(/-*\d+/g)
       this.layer[event.target.id].cx = parseInt(num[0])
       this.layer[event.target.id].cy = parseInt(num[1])
-      console.log(this.layer[event.target.id].cx)
-      console.log(this.layer[event.target.id].cy)
     },
     mMovePath () {
       if (this.is_dragging && event.pageX !== 0 && event.pageY !== 0) {
-        let d = this.layer[event.target.id].d
+        let transform = this.layer[event.target.id].transform
         const x = event.pageX - this.layer[event.target.id].x + this.layer[event.target.id].cx
         const y = event.pageY - this.layer[event.target.id].y + this.layer[event.target.id].cy
-        const m_new = 'M' + x + ' ' + y
-        this.layer[event.target.id].d = d.replace(/M\d+\s\d+/, m_new)
+        const t_new = 'translate(' + x + ' ' + y + ')'
+        this.layer[event.target.id].transform = transform.replace(/translate[(]-*\d+\s-*\d+[)]/, t_new)
       }
     },
     mDownCircle () {
