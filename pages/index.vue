@@ -1,6 +1,6 @@
 <template>
   <v-row justify="end">
-    <v-col cols="12" md="3">
+    <v-col cols="12" md="2">
     </v-col>
     <v-col>
     <div class="artboard" @dragover="dragShape" @drop="dropShape" style="max-width:502px;">
@@ -23,19 +23,67 @@
     </div>
     </v-col>
     <v-col>
-      <v-btn
-        color="primary"
-        dark
-        @click.stop="svg2imageData"
-      >
-        generate!!
-      </v-btn>
-      <v-card>
-        <v-icon>pallete</v-icon>
-        <v-icon>rotate_right</v-icon>
-        <v-icon @click="zoomIn">zoom_in</v-icon>
-        <v-icon @click="zoomOut">zoom_out</v-icon>
-      </v-card>
+      <v-container>
+        <v-row dense>
+          <v-col cols="12">
+            <v-btn
+              color="primary"
+              dark
+              @click.stop="svg2imageData"
+            >
+              generate!!
+            </v-btn>
+          </v-col>
+          <v-col cols="12">
+            <v-card>
+              <v-container>
+                <v-row justify="space-between">
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon>palette</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row justify="space-between">
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon @click="rotateLeft">rotate_left</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon @click="rotateRight">rotate_right</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon @click="zoomIn">zoom_in</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon @click="zoomOut">zoom_out</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-col>
+          <v-col cols="12">
+            <v-card>
+              <v-container>
+                <v-row justify="space-between">
+                  <v-col class="px-0">
+                    <v-btn icon>
+                      <v-icon>layers</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-col>
 
     <v-dialog
@@ -164,6 +212,34 @@ export default {
             y: 0
           })
           break;
+      }
+    },
+    rotateLeft () {
+      if (this.layer.length > 0) {
+        let transform = this.layer[this.selected_layer].transform
+        const rotate = transform.match(/rotate[(][0-9]+[)]/)
+        const deg = rotate[0].match(/[0-9.-]+/g)
+        const f_deg = parseInt(deg[0])
+        let r = f_deg - 10
+        if (r < 0) {
+          r = r + 360
+        }
+        const r_new = 'rotate(' + r + ')'
+        this.layer[this.selected_layer].transform = transform.replace(/rotate[(][0-9]+[)]/, r_new)
+      }
+    },
+    rotateRight () {
+      if (this.layer.length > 0) {
+        let transform = this.layer[this.selected_layer].transform
+        const rotate = transform.match(/rotate[(][0-9]+[)]/)
+        const deg = rotate[0].match(/[0-9.-]+/g)
+        const f_deg = parseInt(deg[0])
+        let r = f_deg + 10
+        if (r === 360) {
+          r = 0
+        }
+        const r_new = 'rotate(' + r + ')'
+        this.layer[this.selected_layer].transform = transform.replace(/rotate[(][0-9]+[)]/, r_new)
       }
     },
     zoomIn () {
